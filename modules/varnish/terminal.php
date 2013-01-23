@@ -1,6 +1,6 @@
 <?php
 /**
- * @package nxcDNA
+ * @package nxcVarnish
  * @author  Serhey Dolgushev <serhey.dolgushev@nxc.no>
  * @date    23 Jan 2013
  **/
