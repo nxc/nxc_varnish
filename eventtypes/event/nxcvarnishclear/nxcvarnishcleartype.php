@@ -62,11 +62,13 @@ class nxcVarnishClearType extends eZWorkflowEventType
 			$nodeIDs[] = $node['node_id'];
 		}
 
-		$nodeIDs = array_unique( $nodeIDs );
+		$nodeIDs        = array_unique( $nodeIDs );
+		$installationID = nxcVarnish::getInstallationID();
 		if( count( $nodeIDs ) > 0 ) {
 			$varnish = nxcVarnish::getInstance();
 			foreach( $nodeIDs as $nodeID ) {
-				$request = 'ban obj.http.X-eZP-NodeID == ' . $nodeID;
+				$request = 'ban obj.http.X-eZPublish-NodeID == ' . $nodeID
+					. ' && obj.http.X-eZPublish-InstallationID == ' . $installationID;
 				try{
 					$varnish->cli( $request );
 				} catch( Exception $e ) {}

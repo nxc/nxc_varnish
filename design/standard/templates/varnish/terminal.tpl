@@ -24,7 +24,7 @@
 						<tbody>
 							<tr class="bglight">
 								<th width="1%">{'Request'|i18n( 'extension/nxc_varnish' )}:</th>
-								<th width="98%"><input type="text" name="request" value="{if $request}{$request|wash}{else}ban obj.http.X-eZP-NodeID == 2{/if}" style="width: 100%;" /></th>
+								<th width="98%"><input type="text" name="request" value="{if $request}{$request|wash}{else}ban obj.http.X-eZPublish-NodeID == 2{/if}" style="width: 100%;" /></th>
 								<th width="1%"><input class="button" type="submit" value="{'Send'|i18n( 'extension/nxc_varnish' )}" name="RequestButton" /></th>
 							</tr>
 						</tbody>

@@ -9,6 +9,7 @@
 class nxcVarnish
 {
 	private static $instance = null;
+	private static $installationID = null;
 
 	private $host    = 'localhost';
 	private $port    = 8081;
@@ -41,8 +42,25 @@ class nxcVarnish
 		return implode( "\n", $output );
 	}
 
+	static function getInstallationID() {
+		if( self::$installationID !== null ) {
+			return self::$installationID;
+		}
+		$db     = eZDB::instance();
+		$result = $db->arrayQuery( 'SELECT value FROM ezsite_data WHERE name=\'varnish_site_id\'' );
+		if( count( $result ) >= 1 ) {
+			self::$installationID = $result[0]['value'];
+		} else {
+			self::$installationID = md5( time() . '-' . mt_rand() );
+			$db->query( 'INSERT INTO ezsite_data ( name, value ) values( \'varnish_site_id\', \'' . self::$installationID . '\' )' );
+		}
+
+		return self::$installationID;
+	}
+
 	public static function addNodeHeader( $nodeID ) {
-		header( 'X-eZP-NodeID: ' . $nodeID );
+		header( 'X-eZPublish-NodeID: ' . $nodeID );
+		header( 'X-eZPublish-InstallationID: ' . self::getInstallationID() );
 		return $nodeID;
 	}
 }
