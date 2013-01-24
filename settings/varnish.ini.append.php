@@ -2,6 +2,6 @@
 
 [VarnishServer]
 Host=localhost
-Port=8081
+Port=6082
 Timeout=10
 */ ?>
