@@ -53,17 +53,21 @@ class nxcVarnishClearType extends eZWorkflowEventType
 
 		// Flow blocks
 		$db = eZDB::instance();
-		$q = 'SELECT DISTINCT block.node_id '
-			. 'FROM ezm_pool pool '
-			. 'LEFT JOIN ezm_block block ON pool.block_id = block.id '
-			. 'WHERE pool.object_id = ' . $parameters['object_id'] . ' AND pool.ts_visible > 0 AND pool.ts_hidden = 0';
-		$nodes = $db->arrayQuery( $q );
-		foreach( $nodes as $node ) {
-			$nodeIDs[] = $node['node_id'];
+		$c  = $db->arrayQuery( 'SHOW TABLES LIKE "ezm_block"' );
+		if( count( $c ) > 0 ) {
+			$q = 'SELECT DISTINCT block.node_id '
+				. 'FROM ezm_pool pool '
+				. 'LEFT JOIN ezm_block block ON pool.block_id = block.id '
+				. 'WHERE pool.object_id = ' . $parameters['object_id'] . ' AND pool.ts_visible > 0 AND pool.ts_hidden = 0';
+			$nodes = $db->arrayQuery( $q );
+			foreach( $nodes as $node ) {
+				$nodeIDs[] = $node['node_id'];
+			}
 		}
 
 		$nodeIDs        = array_unique( $nodeIDs );
 		$installationID = nxcVarnish::getInstallationID();
+
 		if( count( $nodeIDs ) > 0 ) {
 			$varnish = nxcVarnish::getInstance();
 			foreach( $nodeIDs as $nodeID ) {
