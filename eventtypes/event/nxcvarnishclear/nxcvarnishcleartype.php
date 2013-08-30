@@ -25,7 +25,7 @@ class nxcVarnishClearType extends eZWorkflowEventType
 		$nodeIDs    = array();
 		$parameters = $process->attribute( 'parameter_list' );
 
-		$object  = eZContentObject::fetch( $parameters['object_id'] );
+		$object = eZContentObject::fetch( $parameters['object_id'] );
 		if( $object instanceof eZContentObject === false ) {
 			return eZWorkflowType::STATUS_ACCEPTED;
 		}
@@ -68,6 +68,23 @@ class nxcVarnishClearType extends eZWorkflowEventType
 		$nodeIDs        = array_unique( $nodeIDs );
 		$installationID = nxcVarnish::getInstallationID();
 
+		$ini = eZINI::instance( 'varnish.ini' );
+		if( $ini->hasVariable( 'AdditionalClearCacheHandler', 'Callback' ) ) {
+			$callback = $ini->variable( 'AdditionalClearCacheHandler', 'Callback' );
+			$callback = explode( '::', $callback );
+			if( is_callable( $callback ) ) {
+				$nodeIDs = array_unique(
+					array_merge(
+						$nodeIDs,
+						call_user_func_array(
+							$callback,
+							array( $object, $nodeIDs )
+						)
+					)
+				);
+			}
+		}
+
 		if( count( $nodeIDs ) > 0 ) {
 			$varnish = nxcVarnish::getInstance();
 			foreach( $nodeIDs as $nodeID ) {
@@ -80,6 +97,11 @@ class nxcVarnishClearType extends eZWorkflowEventType
 		}
 
 		return eZWorkflowType::STATUS_ACCEPTED;
+	}
+
+	public static function getAdditionalNodeIDs( $object, $nodeIDs ) {
+		$additionalNodeIDs = array();
+		return $additionalNodeIDs;
 	}
 }
 
