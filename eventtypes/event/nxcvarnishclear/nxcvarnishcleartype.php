@@ -30,6 +30,34 @@ class nxcVarnishClearType extends eZWorkflowEventType
 			return eZWorkflowType::STATUS_ACCEPTED;
 		}
 
+		$installationID = nxcVarnish::getInstallationID();
+
+		$ini = eZINI::instance( 'varnish.ini' );
+		if( $ini->hasVariable( 'AdditionalClearCacheHandler', 'Callback' ) ) {
+			$callback = $ini->variable( 'AdditionalClearCacheHandler', 'Callback' );
+			$callback = explode( '::', $callback );
+			if( is_callable( $callback ) ) {
+				$nodeIDs = array_unique(
+					call_user_func_array( $callback, array( $object ) )
+				);
+			}
+		}
+
+		if( count( $nodeIDs ) > 0 ) {
+			$varnish = nxcVarnish::getInstance();
+			foreach( $nodeIDs as $nodeID ) {
+				$request = 'ban obj.http.X-eZPublish-NodeID == ' . $nodeID
+					. ' && obj.http.X-eZPublish-InstallationID == ' . $installationID;
+				try{
+					$varnish->cli( $request );
+				} catch( Exception $e ) {}
+			}
+		}
+
+		return eZWorkflowType::STATUS_ACCEPTED;
+	}
+
+	public static function getNodeIDs( $object ) {
 		// Assigned nodes
 		$assignedNodes = $object->assignedNodes( false );
 		foreach( $assignedNodes as $node ) {
@@ -65,43 +93,7 @@ class nxcVarnishClearType extends eZWorkflowEventType
 			}
 		}
 
-		$nodeIDs        = array_unique( $nodeIDs );
-		$installationID = nxcVarnish::getInstallationID();
-
-		$ini = eZINI::instance( 'varnish.ini' );
-		if( $ini->hasVariable( 'AdditionalClearCacheHandler', 'Callback' ) ) {
-			$callback = $ini->variable( 'AdditionalClearCacheHandler', 'Callback' );
-			$callback = explode( '::', $callback );
-			if( is_callable( $callback ) ) {
-				$nodeIDs = array_unique(
-					array_merge(
-						$nodeIDs,
-						call_user_func_array(
-							$callback,
-							array( $object, $nodeIDs )
-						)
-					)
-				);
-			}
-		}
-
-		if( count( $nodeIDs ) > 0 ) {
-			$varnish = nxcVarnish::getInstance();
-			foreach( $nodeIDs as $nodeID ) {
-				$request = 'ban obj.http.X-eZPublish-NodeID == ' . $nodeID
-					. ' && obj.http.X-eZPublish-InstallationID == ' . $installationID;
-				try{
-					$varnish->cli( $request );
-				} catch( Exception $e ) {}
-			}
-		}
-
-		return eZWorkflowType::STATUS_ACCEPTED;
-	}
-
-	public static function getAdditionalNodeIDs( $object, $nodeIDs ) {
-		$additionalNodeIDs = array();
-		return $additionalNodeIDs;
+		return array_unique( $nodeIDs );
 	}
 }
 

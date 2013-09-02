@@ -6,6 +6,6 @@ Port=6082
 Timeout=10
 
 [AdditionalClearCacheHandler]
-Callback=nxcVarnishClearType::getAdditionalNodeIDs
+Callback=nxcVarnishClearType::getNodeIDs
 
 */ ?>
