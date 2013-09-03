@@ -39,7 +39,7 @@ class nxcVarnish
 		$request = escapeshellcmd( trim( $request ) );
  		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . ' ' . $request;
  		if( $background ) {
- 			 exec( $cmd . ' &' );
+ 			 exec( $cmd . ' > /dev/null 2>&1 &' );
  			 return true;
  		}
 
