@@ -49,7 +49,7 @@ class nxcVarnishClearType extends eZWorkflowEventType
 				$request = 'ban obj.http.X-eZPublish-NodeID == ' . $nodeID
 					. ' && obj.http.X-eZPublish-InstallationID == ' . $installationID;
 				try{
-					$varnish->cli( $request );
+					$varnish->cli( $request, true );
 				} catch( Exception $e ) {}
 			}
 		}

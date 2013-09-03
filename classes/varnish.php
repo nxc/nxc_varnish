@@ -35,9 +35,14 @@ class nxcVarnish
 		return self::$instance;
 	}
 
-	public function cli( $request ) {
+	public function cli( $request, $background = false ) {
 		$request = escapeshellcmd( trim( $request ) );
  		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . ' ' . $request;
+ 		if( $background ) {
+ 			 exec( $cmd . ' &' );
+ 			 return true;
+ 		}
+
  		exec( $cmd, $output );
 		return implode( "\n", $output );
 	}
