@@ -37,7 +37,9 @@ class nxcVarnish
 
 	public function cli( $request, $background = false ) {
 		$request = escapeshellcmd( trim( $request ) );
- 		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . " ' " . $request . " ' ";
+                // add singlequotes
+                $request = "'".$request."'";
+ 		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . ' '. $request;
  		if( $background ) {
  			 exec( $cmd . ' > /dev/null 2>&1 &' );
  			 return true;
