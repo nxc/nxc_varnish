@@ -35,10 +35,8 @@ class nxcVarnish
 		return self::$instance;
 	}
 
-	public function cli( $request, $background = false ) {
-		$request = escapeshellcmd( trim( $request ) );
-                // add singlequotes
-                $request = "'".$request."'";
+	public function cli( $request, $background = false ) {		
+                $request = "'" . preg_replace("/'/", "'\\''", trim($request)) . "'";
  		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . ' '. $request;
  		if( $background ) {
  			 exec( $cmd . ' > /dev/null 2>&1 &' );
