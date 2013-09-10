@@ -35,13 +35,13 @@ class nxcVarnish
 		return self::$instance;
 	}
 
-	public function cli( $request, $background = false ) {		
-                $request = "'" . preg_replace("/'/", "'\\''", trim($request)) . "'";
- 		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . ' '. $request;
- 		if( $background ) {
- 			 exec( $cmd . ' > /dev/null 2>&1 &' );
- 			 return true;
- 		}
+	public function cli( $request, $background = false ) {
+		$request = "'" . str_replace( "'", "'\\''", trim( $request ) ) . "'";
+		$cmd     = 'varnishadm -T ' . $this->host . ':' . $this->port . ' -t ' . $this->port . ' ' . $request;
+		if( $background ) {
+			exec( $cmd . ' > /dev/null 2>&1 &' );
+			return true;
+		}
 
  		exec( $cmd, $output );
 		return implode( "\n", $output );
