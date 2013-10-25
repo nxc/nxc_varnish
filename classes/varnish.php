@@ -64,6 +64,9 @@ class nxcVarnish
 	}
 
 	public static function addNodeHeader( $nodeID ) {
+        $node = eZContentObjectTreeNode::fetch( $nodeID );
+		header( 'X-Class-Id: ' . $node->ContentObject->ClassID );
+        header( 'X-Pub-Date: ' . $node->ContentObject->Modified );
 		header( 'X-eZPublish-NodeID: ' . $nodeID );
 		header( 'X-eZPublish-InstallationID: ' . self::getInstallationID() );
 		return $nodeID;

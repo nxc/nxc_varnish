@@ -17,6 +17,12 @@ $ViewList = array(
 		'params'                  => array(),
 		'default_navigation_part' => 'ezsetupnavigationpart',
 		'single_post_actions'     => array( 'RequestButton' => 'Request' )
+	),
+    'clear' => array(
+		'script'                  => 'clear.php',
+		'functions'               => array( 'terminal' ),
+		'params'                  => array(),
+		'default_navigation_part' => 'ezsetupnavigationpart'
 	)
 );
 
