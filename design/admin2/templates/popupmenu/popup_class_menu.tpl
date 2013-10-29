@@ -48,6 +48,8 @@ menuArray['ClassMenu']['elements']['clear-varnish-class'] = {ldelim} 'url': {"va
     <hr />
     <a id="class-history" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Manage versions'|i18n( 'design/admin/popupmenu' )}</a>
     <a id="url-alias" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Manage URL aliases'|i18n( 'design/admin/popupmenu' )}</a>
+    <a id="clear-varnish-node" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Clear varnish cache for node'|i18n( 'design/admin/popupmenu' )}</a>
+    <a id="clear-varnish-class" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Clear varnish cache for class'|i18n( 'design/admin/popupmenu' )}</a>
 
     {* Include additional class menu items  based on .ini settings *}
     {foreach ezini( 'AdditionalMenuSettings', 'ClassMenuTemplateArray', 'admininterface.ini' ) as $template}
