@@ -19,7 +19,34 @@
 	<div class="box-ml">
 		<div class="box-mr">
 			<div class="box-content">
-				<form method="post" action="{'/varnish/terminal'|ezurl( 'no' )}">
+                <div>
+                    <h2 class="context-title">{'Predefined types'|i18n( 'extension/nxc_varnish' )}</h2>
+                </div>
+                <div class="header-mainline"></div>
+                <form method="post" action="{'/varnish/clear'|ezurl( 'no' )}" name="clearVarnishCache">
+					<table class="list cache" cellspacing="0">
+						<tbody>
+							<tr>
+								<th class="tight"><img src={'toggle-button-16x16.gif'|ezimage} alt="{'Invert selection.'|i18n( 'design/admin/class/classlist' )}" title="{'Invert selection.'|i18n( 'design/admin/class/classlist' )}" onclick="ezjs_toggleCheckboxes( document.clearVarnishCache, 'ClearArray[]' ); return false;" /></th>
+                                <th><lable>{'Cache Type'|i18n('nxc_varnish/clear')}</lable></th>
+							</tr>
+                            <tr class="bglight">
+                                <th class="tight"><input type="checkbox" name="ClearArray[]" value=".css"/></th>
+                                <th><lable>{'Stylesheets(.css)'|i18n('nxc_varnish/clear')}</lable></th>
+							</tr>
+                            <tr class="bgdark">
+                                <th class="tight"><input type="checkbox" name="ClearArray[]" value=".js"/></th>
+                                <th><lable>{'Javascript files(.js)'|i18n('nxc_varnish/clear')}</lable></th>
+							</tr>
+						</tbody>
+					</table>
+                    <input type="submit" class="button" name="ClearSelected" value="ClearSelected"/>
+				</form>
+                <div>
+                    <h2 class="context-title">{'Custom request'|i18n( 'extension/nxc_varnish' )}</h2>
+                </div>
+                <div class="header-mainline"></div>
+                <form method="post" action="{'/varnish/terminal'|ezurl( 'no' )}" class="list">
 					<table class="list cache" cellspacing="0">
 						<tbody>
 							<tr class="bglight">
@@ -30,7 +57,7 @@
 						</tbody>
 					</table>
 				</form>
-				<table cellspacing="0" class="list">
+                <table cellspacing="0" class="list">
 					<tr>
 						<td colspan="3">
 							<pre>{if $response}{$response|wash()}{else}{'Result will be displayed here'|i18n( 'extension/nxc_varnish' )}{/if}</pre>
