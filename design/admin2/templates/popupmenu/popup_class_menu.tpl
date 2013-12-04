@@ -1,3 +1,5 @@
+{def $hasAccessToVarnishNode = fetch( 'user', 'has_access_to', hash( 'module', 'varnish', 'function', 'clear_node' ))
+     $hasAccessToVarnishClass = fetch( 'user', 'has_access_to', hash( 'module', 'varnish', 'function', 'clear_class' ))}
 <!-- Class popup menu -->
 <script type="text/javascript">
 menuArray['ClassMenu'] = {ldelim} 'depth': 0, 'headerID': 'class-header' {rdelim};
@@ -14,8 +16,8 @@ menuArray['ClassMenu']['elements']['class-removenodefeed']['disabled_class'] = '
 menuArray['ClassMenu']['elements']['class-removenodefeed']['disabled_for'] = {ldelim} 'class-removenodefeed': 'yes' {rdelim};
 menuArray['ClassMenu']['elements']['class-history'] = {ldelim} 'url': {"content/history/%objectID%"|ezurl} {rdelim};
 menuArray['ClassMenu']['elements']['url-alias'] = {ldelim} 'url': {"content/urlalias/%nodeID%"|ezurl} {rdelim};
-menuArray['ClassMenu']['elements']['clear-varnish-node'] = {ldelim} 'url': {"varnish/clear/(node)/%nodeID%?curr_url=%currentURL%"|ezurl} {rdelim};
-menuArray['ClassMenu']['elements']['clear-varnish-class'] = {ldelim} 'url': {"varnish/clear/(class)/%classID%?curr_url=%currentURL%"|ezurl} {rdelim};
+menuArray['ClassMenu']['elements']['clear-varnish-node'] = {ldelim} 'url': {"varnish/clear_node/(node)/%nodeID%?curr_url=%currentURL%"|ezurl} {rdelim};
+menuArray['ClassMenu']['elements']['clear-varnish-class'] = {ldelim} 'url': {"varnish/clear_class/(class)/%classID%?curr_url=%currentURL%"|ezurl} {rdelim};
 </script>
 
 <div class="popupmenu" id="ClassMenu">
@@ -48,8 +50,12 @@ menuArray['ClassMenu']['elements']['clear-varnish-class'] = {ldelim} 'url': {"va
     <hr />
     <a id="class-history" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Manage versions'|i18n( 'design/admin/popupmenu' )}</a>
     <a id="url-alias" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Manage URL aliases'|i18n( 'design/admin/popupmenu' )}</a>
-    <a id="clear-varnish-node" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Clear varnish cache for node'|i18n( 'design/admin/popupmenu' )}</a>
-    <a id="clear-varnish-class" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Clear varnish cache for class'|i18n( 'design/admin/popupmenu' )}</a>
+    {if $hasAccessToVarnishNode}
+	<a id="clear-varnish-node" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Clear varnish cache for node'|i18n( 'design/admin/popupmenu' )}</a>
+    {/if}
+    {if $hasAccessToVarnishClass}
+	<a id="clear-varnish-class" href="#" onmouseover="ezpopmenu_mouseOver( 'ClassMenu' )">{'Clear varnish cache for class'|i18n( 'design/admin/popupmenu' )}</a>
+    {/if}
 
     {* Include additional class menu items  based on .ini settings *}
     {foreach ezini( 'AdditionalMenuSettings', 'ClassMenuTemplateArray', 'admininterface.ini' ) as $template}

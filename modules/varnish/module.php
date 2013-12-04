@@ -7,25 +7,33 @@
 
 $Module = array(
 	'name'      => 'NXC Varnish',
-	'functions' => array()
+	'functions' => array( 'terminal', 'clear_class', 'clear_node' )
 );
 
 $ViewList = array(
-	'terminal' => array(
+    'terminal' => array(
 		'script'                  => 'terminal.php',
 		'functions'               => array( 'terminal' ),
 		'params'                  => array(),
 		'default_navigation_part' => 'ezsetupnavigationpart',
 		'single_post_actions'     => array( 'RequestButton' => 'Request' )
 	),
-    'clear' => array(
+    'clear_class' => array(
 		'script'                  => 'clear.php',
-		'functions'               => array( 'terminal' ),
+		'functions'               => array( 'clear_class' ),
+		'params'                  => array(),
+		'default_navigation_part' => 'ezsetupnavigationpart'
+	),
+    'clear_node' => array(
+		'script'                  => 'clear.php',
+		'functions'               => array( 'clear_node' ),
 		'params'                  => array(),
 		'default_navigation_part' => 'ezsetupnavigationpart'
 	)
 );
 
 $FunctionList = array(
-	'terminal' => array()
+	'terminal' => array(),
+	'clear_class' => array(),
+	'clear_node' => array()
 );
