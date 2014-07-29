@@ -15,7 +15,8 @@ class nxcVarnishClearType extends eZWorkflowEventType
 		$this->setTriggerTypes(
 			array(
 				'content' => array(
-					'publish' => array( 'after', 'before' )
+					'publish' => array( 'after', 'before' ),
+					'delete' => array( 'after', 'before' )
 				)
 			)
 		);
@@ -24,23 +25,34 @@ class nxcVarnishClearType extends eZWorkflowEventType
 	public function execute( $process, $event ) {
 		$nodeIDs    = array();
 		$parameters = $process->attribute( 'parameter_list' );
-
-		$object = eZContentObject::fetch( $parameters['object_id'] );
-		if( $object instanceof eZContentObject === false ) {
-			return eZWorkflowType::STATUS_ACCEPTED;
-		}
-
+		$ini = eZINI::instance( 'varnish.ini' );
 		$installationID = nxcVarnish::getInstallationID();
 
-		$ini = eZINI::instance( 'varnish.ini' );
 		if( $ini->hasVariable( 'AdditionalClearCacheHandler', 'Callback' ) ) {
-			$callback = $ini->variable( 'AdditionalClearCacheHandler', 'Callback' );
-			$callback = explode( '::', $callback );
+		    $callback = $ini->variable( 'AdditionalClearCacheHandler', 'Callback' );
+		    $callback = explode( '::', $callback );
+		}
+
+		if ( isset($parameters['module_function']) && $parameters['module_function'] == 'delete' && isset($parameters['node_id_list']) && !empty($parameters['node_id_list']) ) {
+		    foreach( $parameters['node_id_list'] as $nodeId ) {
+			$ezNode = eZContentObjectTreeNode::fetch( $nodeId );
+			$object = $ezNode->object();
 			if( is_callable( $callback ) ) {
-				$nodeIDs = array_unique(
-					call_user_func_array( $callback, array( $object ) )
-				);
+			    $nodeIDs = array_merge($nodeIDs, call_user_func_array( $callback, array( $object ) ) );
 			}
+		    }
+		    $nodeIDs = array_unique( $nodeIDs );
+		}
+		else {
+		    $object = eZContentObject::fetch( $parameters['object_id'] );
+		    if( $object instanceof eZContentObject === false ) {
+			    return eZWorkflowType::STATUS_ACCEPTED;
+		    }
+		    if( is_callable( $callback ) ) {
+			$nodeIDs = array_unique(
+				call_user_func_array( $callback, array( $object ) )
+			);
+		    }
 		}
 
 		if( count( $nodeIDs ) > 0 ) {
