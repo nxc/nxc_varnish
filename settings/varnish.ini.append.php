@@ -20,11 +20,6 @@ Port=6082
 Timeout=10
 SecretFile=/etc/varnish/secret2
 
-[VarnishServers]
-Host=localhost
-Port=6082
-Timeout=10
-
 [AdditionalClearCacheHandler]
 Callback=nxcVarnishClearType::getNodeIDs
 
